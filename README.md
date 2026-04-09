@@ -38,12 +38,22 @@ dotnet run --project QRCreator.Avalonia/QRCreator.Avalonia.csproj
 
 [GitHub Releases](../../releases/latest)에서 플랫폼별 설치 파일을 받을 수 있습니다.
 
-| 플랫폼 | 아키텍처 |
-|:---|:---|
-| Windows | x64 |
-| macOS | x64 (Intel) / ARM64 (Apple Silicon) |
+### Windows (x64)
 
-설치 후 Velopack 자동 업데이트가 적용됩니다.
+1. `QRCreator-x.x.x-win-x64-Setup.exe` 다운로드
+2. Setup.exe 실행 → 설치 완료 후 자동 실행
+3. Windows SmartScreen 경고가 뜰 수 있습니다. **"추가 정보" → "실행"** 클릭하면 설치됩니다.
+
+### macOS
+
+| 칩 | 파일 |
+|:---|:---|
+| Intel | `QRCreator-x.x.x-osx-x64-Setup.pkg` |
+| Apple Silicon (M1/M2/M3/M4) | `QRCreator-x.x.x-osx-arm64-Setup.pkg` |
+
+1. 본인 Mac 칩에 맞는 `.pkg` 파일 다운로드
+2. `.pkg` 파일 더블클릭 → 설치 진행
+3. "확인되지 않은 개발자" 경고가 뜨면: **시스템 설정 → 개인정보 보호 및 보안 → "확인 없이 열기"** 클릭
 
 ## 로컬 빌드
 
