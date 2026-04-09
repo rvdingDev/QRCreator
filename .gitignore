@@ -52,3 +52,20 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.dtbcache.v2
+*.futdcache.v2
+*FileContentIndex*
+
+# Project-specific
+.serena/
+docs/superpowers/
+SPEC.md
+
+# Claude
+.claude/
