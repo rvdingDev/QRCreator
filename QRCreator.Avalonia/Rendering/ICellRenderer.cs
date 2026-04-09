@@ -1,7 +1,7 @@
-using QRCreator.Models;
+using QRCreator.Avalonia.Models;
 using SkiaSharp;
 
-namespace QRCreator.Rendering;
+namespace QRCreator.Avalonia.Rendering;
 
 public interface ICellRenderer
 {

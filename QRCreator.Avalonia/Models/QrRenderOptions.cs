@@ -1,6 +1,6 @@
 using SkiaSharp;
 
-namespace QRCreator.Models;
+namespace QRCreator.Avalonia.Models;
 
 public sealed class QrRenderOptions
 {

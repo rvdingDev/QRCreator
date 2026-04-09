@@ -1,0 +1,568 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:converters="clr-namespace:QRCreator.Avalonia.Converters"
+        xmlns:vm="clr-namespace:QRCreator.Avalonia.ViewModels"
+        x:Class="QRCreator.Avalonia.MainWindow"
+        x:DataType="vm:QrDesignViewModel"
+        Title="QR Creator"
+        Width="1100"
+        Height="750"
+        MinWidth="800"
+        MinHeight="600">
+
+    <Window.Resources>
+        <converters:EnumToBooleanConverter x:Key="EnumToBool" />
+        <converters:ColorToHexConverter x:Key="ColorToHex" />
+        <converters:IntToBooleanConverter x:Key="IntToBool" />
+
+        <!--  Shape icon geometries (matching FluentIconPaths SVG data, viewBox 24x24)  -->
+        <StreamGeometry x:Key="SquareGeom">M0 0H24V24H0Z</StreamGeometry>
+        <StreamGeometry x:Key="CircleGeom">M12 2A10 10 0 1 0 12 22A10 10 0 1 0 12 2Z</StreamGeometry>
+        <StreamGeometry x:Key="RoundedSquareGeom">M6 2H18C20.2 2 22 3.8 22 6V18C22 20.2 20.2 22 18 22H6C3.8 22 2 20.2 2 18V6C2 3.8 3.8 2 6 2Z</StreamGeometry>
+        <StreamGeometry x:Key="DiamondGeom">M2.95 9.7a3.25 3.25 0 0 0 0 4.6l6.75 6.75a3.25 3.25 0 0 0 4.6 0l6.75-6.75a3.25 3.25 0 0 0 0-4.6L14.3 2.95a3.25 3.25 0 0 0-4.6 0L2.95 9.7Z</StreamGeometry>
+        <StreamGeometry x:Key="HeartGeom">M12.82 5.58 12 6.4l-.82-.82a5.37 5.37 0 1 0-7.6 7.6l7.89 7.9c.3.29.77.29 1.06 0l7.9-7.9a5.38 5.38 0 1 0-7.61-7.6Z</StreamGeometry>
+        <StreamGeometry x:Key="StarGeom">M10.79 3.1c.5-1 1.92-1 2.42 0l2.36 4.78 5.27.77c1.1.16 1.55 1.52.75 2.3l-3.82 3.72.9 5.25a1.35 1.35 0 0 1-1.96 1.42L12 18.86l-4.72 2.48a1.35 1.35 0 0 1-1.96-1.42l.9-5.25-3.81-3.72c-.8-.78-.36-2.14.75-2.3l5.27-.77 2.36-4.78Z</StreamGeometry>
+        <StreamGeometry x:Key="HexagonGeom">M12 2L21.6 7V17L12 22L2.4 17V7Z</StreamGeometry>
+        <StreamGeometry x:Key="RaindropGeom">M12 2C12 2 4 10 4 15A8 8 0 0 0 20 15C20 10 12 2 12 2Z</StreamGeometry>
+        <StreamGeometry x:Key="CloverGeom">M6.75 2a4.75 4.75 0 0 0 0 9.5h4c.41 0 .75-.34.75-.75v-4A4.75 4.75 0 0 0 6.75 2Zm0 20a4.75 4.75 0 1 1 0-9.5h4c.41 0 .75.34.75.75v4A4.75 4.75 0 0 1 6.75 22Zm10.5-20a4.75 4.75 0 1 1 0 9.5h-4a.75.75 0 0 1-.75-.75v-4A4.75 4.75 0 0 1 17.25 2Zm0 20a4.75 4.75 0 1 0 0-9.5h-4a.75.75 0 0 0-.75.75v4A4.75 4.75 0 0 0 17.25 22Z</StreamGeometry>
+        <StreamGeometry x:Key="OctagonGeom">M5,0 L11,0 L16,5 L16,11 L11,16 L5,16 L0,11 L0,5 Z</StreamGeometry>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!--  Title Bar area  -->
+        <Border Grid.Row="0" Padding="16,8" Background="{DynamicResource CardBackgroundFillColorDefaultBrush}">
+            <DockPanel>
+                <TextBlock VerticalAlignment="Center"
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           Text="QR Creator" />
+                <Button DockPanel.Dock="Right"
+                        HorizontalAlignment="Right"
+                        Click="ThemeToggle_Click"
+                        Content="Toggle Theme" />
+            </DockPanel>
+        </Border>
+
+        <!--  Main Content: 2-column layout  -->
+        <Grid Grid.Row="1" Margin="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="320" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!--  LEFT: Options Panel  -->
+            <ScrollViewer Grid.Column="0"
+                          Padding="16,8,8,16"
+                          VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+
+                    <!--  URL Card  -->
+                    <Border Margin="0,0,0,8" Padding="16" CornerRadius="8"
+                            Background="{DynamicResource CardBackgroundFillColorDefaultBrush}">
+                        <StackPanel>
+                            <TextBlock Margin="0,0,0,8"
+                                       FontWeight="SemiBold"
+                                       Text="URL" />
+                            <TextBox PlaceholderText="Enter URL or text..."
+                                     Text="{Binding TargetUrl}" />
+                        </StackPanel>
+                    </Border>
+
+                    <!--  Cell Shape Card  -->
+                    <Border Margin="0,0,0,8" Padding="16" CornerRadius="8"
+                            Background="{DynamicResource CardBackgroundFillColorDefaultBrush}">
+                        <StackPanel>
+                            <TextBlock Margin="0,0,0,8"
+                                       FontWeight="SemiBold"
+                                       Text="Cell Shape" />
+                            <UniformGrid HorizontalAlignment="Stretch" Columns="5">
+                                <ToggleButton Margin="2"
+                                              IsChecked="{Binding CellShape, Converter={StaticResource EnumToBool}, ConverterParameter=Square}"
+                                              ToolTip.Tip="Square">
+                                    <PathIcon Width="16" Height="16" Data="{StaticResource SquareGeom}"
+                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                </ToggleButton>
+                                <ToggleButton Margin="2"
+                                              IsChecked="{Binding CellShape, Converter={StaticResource EnumToBool}, ConverterParameter=Circle}"
+                                              ToolTip.Tip="Circle">
+                                    <PathIcon Width="16" Height="16" Data="{StaticResource CircleGeom}"
+                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                </ToggleButton>
+                                <ToggleButton Margin="2"
+                                              IsChecked="{Binding CellShape, Converter={StaticResource EnumToBool}, ConverterParameter=RoundedSquare}"
+                                              ToolTip.Tip="Rounded">
+                                    <PathIcon Width="16" Height="16" Data="{StaticResource RoundedSquareGeom}"
+                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                </ToggleButton>
+                                <ToggleButton Margin="2"
+                                              IsChecked="{Binding CellShape, Converter={StaticResource EnumToBool}, ConverterParameter=Diamond}"
+                                              ToolTip.Tip="Diamond">
+                                    <PathIcon Width="16" Height="16" Data="{StaticResource DiamondGeom}"
+                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                </ToggleButton>
+                                <ToggleButton Margin="2"
+                                              IsChecked="{Binding CellShape, Converter={StaticResource EnumToBool}, ConverterParameter=Heart}"
+                                              ToolTip.Tip="Heart">
+                                    <PathIcon Width="16" Height="16" Data="{StaticResource HeartGeom}"
+                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                </ToggleButton>
+                                <ToggleButton Margin="2"
+                                              IsChecked="{Binding CellShape, Converter={StaticResource EnumToBool}, ConverterParameter=Star}"
+                                              ToolTip.Tip="Star">
+                                    <PathIcon Width="16" Height="16" Data="{StaticResource StarGeom}"
+                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                </ToggleButton>
+                                <ToggleButton Margin="2"
+                                              IsChecked="{Binding CellShape, Converter={StaticResource EnumToBool}, ConverterParameter=Hexagon}"
+                                              ToolTip.Tip="Hexagon">
+                                    <PathIcon Width="16" Height="16" Data="{StaticResource HexagonGeom}"
+                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                </ToggleButton>
+                                <ToggleButton Margin="2"
+                                              IsChecked="{Binding CellShape, Converter={StaticResource EnumToBool}, ConverterParameter=Raindrop}"
+                                              ToolTip.Tip="Raindrop">
+                                    <PathIcon Width="16" Height="16" Data="{StaticResource RaindropGeom}"
+                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                </ToggleButton>
+                                <ToggleButton Margin="2"
+                                              IsChecked="{Binding CellShape, Converter={StaticResource EnumToBool}, ConverterParameter=Clover}"
+                                              ToolTip.Tip="Clover">
+                                    <PathIcon Width="16" Height="16" Data="{StaticResource CloverGeom}"
+                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                </ToggleButton>
+                                <ToggleButton Margin="2"
+                                              IsChecked="{Binding CellShape, Converter={StaticResource EnumToBool}, ConverterParameter=Octagon}"
+                                              ToolTip.Tip="Octagon">
+                                    <PathIcon Width="16" Height="16" Data="{StaticResource OctagonGeom}"
+                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                </ToggleButton>
+                            </UniformGrid>
+                        </StackPanel>
+                    </Border>
+
+                    <!--  Finder Shape Card  -->
+                    <Border Margin="0,0,0,8" Padding="16" CornerRadius="8"
+                            Background="{DynamicResource CardBackgroundFillColorDefaultBrush}">
+                        <StackPanel>
+                            <TextBlock Margin="0,0,0,8"
+                                       FontWeight="SemiBold"
+                                       Text="Finder Shape" />
+                            <UniformGrid HorizontalAlignment="Stretch" Columns="5">
+                                <ToggleButton Margin="2"
+                                              IsChecked="{Binding FinderShape, Converter={StaticResource EnumToBool}, ConverterParameter=Square}"
+                                              ToolTip.Tip="Square">
+                                    <PathIcon Width="16" Height="16" Data="{StaticResource SquareGeom}"
+                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                </ToggleButton>
+                                <ToggleButton Margin="2"
+                                              IsChecked="{Binding FinderShape, Converter={StaticResource EnumToBool}, ConverterParameter=Circle}"
+                                              ToolTip.Tip="Circle">
+                                    <PathIcon Width="16" Height="16" Data="{StaticResource CircleGeom}"
+                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                </ToggleButton>
+                                <ToggleButton Margin="2"
+                                              IsChecked="{Binding FinderShape, Converter={StaticResource EnumToBool}, ConverterParameter=RoundedSquare}"
+                                              ToolTip.Tip="Rounded">
+                                    <PathIcon Width="16" Height="16" Data="{StaticResource RoundedSquareGeom}"
+                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                </ToggleButton>
+                                <ToggleButton Margin="2"
+                                              IsChecked="{Binding FinderShape, Converter={StaticResource EnumToBool}, ConverterParameter=Diamond}"
+                                              ToolTip.Tip="Diamond">
+                                    <PathIcon Width="16" Height="16" Data="{StaticResource DiamondGeom}"
+                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                </ToggleButton>
+                                <ToggleButton Margin="2"
+                                              IsChecked="{Binding FinderShape, Converter={StaticResource EnumToBool}, ConverterParameter=Heart}"
+                                              ToolTip.Tip="Heart">
+                                    <PathIcon Width="16" Height="16" Data="{StaticResource HeartGeom}"
+                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                </ToggleButton>
+                                <ToggleButton Margin="2"
+                                              IsChecked="{Binding FinderShape, Converter={StaticResource EnumToBool}, ConverterParameter=Star}"
+                                              ToolTip.Tip="Star">
+                                    <PathIcon Width="16" Height="16" Data="{StaticResource StarGeom}"
+                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                </ToggleButton>
+                                <ToggleButton Margin="2"
+                                              IsChecked="{Binding FinderShape, Converter={StaticResource EnumToBool}, ConverterParameter=Hexagon}"
+                                              ToolTip.Tip="Hexagon">
+                                    <PathIcon Width="16" Height="16" Data="{StaticResource HexagonGeom}"
+                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                </ToggleButton>
+                                <ToggleButton Margin="2"
+                                              IsChecked="{Binding FinderShape, Converter={StaticResource EnumToBool}, ConverterParameter=Raindrop}"
+                                              ToolTip.Tip="Raindrop">
+                                    <PathIcon Width="16" Height="16" Data="{StaticResource RaindropGeom}"
+                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                </ToggleButton>
+                                <ToggleButton Margin="2"
+                                              IsChecked="{Binding FinderShape, Converter={StaticResource EnumToBool}, ConverterParameter=Clover}"
+                                              ToolTip.Tip="Clover">
+                                    <PathIcon Width="16" Height="16" Data="{StaticResource CloverGeom}"
+                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                </ToggleButton>
+                                <ToggleButton Margin="2"
+                                              IsChecked="{Binding FinderShape, Converter={StaticResource EnumToBool}, ConverterParameter=Octagon}"
+                                              ToolTip.Tip="Octagon">
+                                    <PathIcon Width="16" Height="16" Data="{StaticResource OctagonGeom}"
+                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                </ToggleButton>
+                            </UniformGrid>
+                        </StackPanel>
+                    </Border>
+
+                    <!--  Colors Card  -->
+                    <Border Margin="0,0,0,8" Padding="16" CornerRadius="8"
+                            Background="{DynamicResource CardBackgroundFillColorDefaultBrush}">
+                        <StackPanel>
+                            <TextBlock Margin="0,0,0,12"
+                                       FontWeight="SemiBold"
+                                       Text="Colors" />
+
+                            <!--  Foreground Color  -->
+                            <StackPanel Margin="0,0,0,8">
+                                <TextBlock Margin="0,0,0,4"
+                                           FontSize="12"
+                                           Opacity="0.7"
+                                           Text="Foreground" />
+                                <DockPanel Margin="0,0,0,4">
+                                    <Border Width="32" Height="32"
+                                            Margin="0,0,8,0"
+                                            CornerRadius="4"
+                                            BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                            BorderThickness="1">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="{Binding ForegroundColor}" />
+                                        </Border.Background>
+                                    </Border>
+                                    <TextBox Width="90"
+                                             HorizontalAlignment="Left"
+                                             MaxLength="7"
+                                             Text="{Binding ForegroundColor, Converter={StaticResource ColorToHex}}" />
+                                </DockPanel>
+                                <UniformGrid Width="210"
+                                             HorizontalAlignment="Left"
+                                             Columns="6">
+                                    <Button Width="30" Height="30" Margin="2"
+                                            Background="#FF000000"
+                                            Command="{Binding SetForegroundColorCommand}"
+                                            CommandParameter="#000000"
+                                            ToolTip.Tip="#000000" />
+                                    <Button Width="30" Height="30" Margin="2"
+                                            Background="#FFFFFFFF"
+                                            BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                            BorderThickness="1"
+                                            Command="{Binding SetForegroundColorCommand}"
+                                            CommandParameter="#FFFFFF"
+                                            ToolTip.Tip="#FFFFFF" />
+                                    <Button Width="30" Height="30" Margin="2"
+                                            Background="#FFE53935"
+                                            Command="{Binding SetForegroundColorCommand}"
+                                            CommandParameter="#E53935"
+                                            ToolTip.Tip="#E53935" />
+                                    <Button Width="30" Height="30" Margin="2"
+                                            Background="#FFE91E63"
+                                            Command="{Binding SetForegroundColorCommand}"
+                                            CommandParameter="#E91E63"
+                                            ToolTip.Tip="#E91E63" />
+                                    <Button Width="30" Height="30" Margin="2"
+                                            Background="#FF9C27B0"
+                                            Command="{Binding SetForegroundColorCommand}"
+                                            CommandParameter="#9C27B0"
+                                            ToolTip.Tip="#9C27B0" />
+                                    <Button Width="30" Height="30" Margin="2"
+                                            Background="#FF673AB7"
+                                            Command="{Binding SetForegroundColorCommand}"
+                                            CommandParameter="#673AB7"
+                                            ToolTip.Tip="#673AB7" />
+                                    <Button Width="30" Height="30" Margin="2"
+                                            Background="#FF1E88E5"
+                                            Command="{Binding SetForegroundColorCommand}"
+                                            CommandParameter="#1E88E5"
+                                            ToolTip.Tip="#1E88E5" />
+                                    <Button Width="30" Height="30" Margin="2"
+                                            Background="#FF00ACC1"
+                                            Command="{Binding SetForegroundColorCommand}"
+                                            CommandParameter="#00ACC1"
+                                            ToolTip.Tip="#00ACC1" />
+                                    <Button Width="30" Height="30" Margin="2"
+                                            Background="#FF43A047"
+                                            Command="{Binding SetForegroundColorCommand}"
+                                            CommandParameter="#43A047"
+                                            ToolTip.Tip="#43A047" />
+                                    <Button Width="30" Height="30" Margin="2"
+                                            Background="#FF7CB342"
+                                            Command="{Binding SetForegroundColorCommand}"
+                                            CommandParameter="#7CB342"
+                                            ToolTip.Tip="#7CB342" />
+                                    <Button Width="30" Height="30" Margin="2"
+                                            Background="#FFFB8C00"
+                                            Command="{Binding SetForegroundColorCommand}"
+                                            CommandParameter="#FB8C00"
+                                            ToolTip.Tip="#FB8C00" />
+                                    <Button Width="30" Height="30" Margin="2"
+                                            Background="#FF795548"
+                                            Command="{Binding SetForegroundColorCommand}"
+                                            CommandParameter="#795548"
+                                            ToolTip.Tip="#795548" />
+                                </UniformGrid>
+                            </StackPanel>
+
+                            <!--  Background Color  -->
+                            <StackPanel>
+                                <TextBlock Margin="0,0,0,4"
+                                           FontSize="12"
+                                           Opacity="0.7"
+                                           Text="Background" />
+                                <DockPanel Margin="0,0,0,4">
+                                    <Border Width="32" Height="32"
+                                            Margin="0,0,8,0"
+                                            CornerRadius="4"
+                                            BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                            BorderThickness="1">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="{Binding BackgroundColor}" />
+                                        </Border.Background>
+                                    </Border>
+                                    <TextBox Width="90"
+                                             HorizontalAlignment="Left"
+                                             MaxLength="7"
+                                             Text="{Binding BackgroundColor, Converter={StaticResource ColorToHex}}" />
+                                </DockPanel>
+                                <UniformGrid Width="210"
+                                             HorizontalAlignment="Left"
+                                             Columns="6">
+                                    <Button Width="30" Height="30" Margin="2"
+                                            Background="#FF000000"
+                                            Command="{Binding SetBackgroundColorCommand}"
+                                            CommandParameter="#000000"
+                                            ToolTip.Tip="#000000" />
+                                    <Button Width="30" Height="30" Margin="2"
+                                            Background="#FFFFFFFF"
+                                            BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                            BorderThickness="1"
+                                            Command="{Binding SetBackgroundColorCommand}"
+                                            CommandParameter="#FFFFFF"
+                                            ToolTip.Tip="#FFFFFF" />
+                                    <Button Width="30" Height="30" Margin="2"
+                                            Background="#FFE53935"
+                                            Command="{Binding SetBackgroundColorCommand}"
+                                            CommandParameter="#E53935"
+                                            ToolTip.Tip="#E53935" />
+                                    <Button Width="30" Height="30" Margin="2"
+                                            Background="#FFE91E63"
+                                            Command="{Binding SetBackgroundColorCommand}"
+                                            CommandParameter="#E91E63"
+                                            ToolTip.Tip="#E91E63" />
+                                    <Button Width="30" Height="30" Margin="2"
+                                            Background="#FF9C27B0"
+                                            Command="{Binding SetBackgroundColorCommand}"
+                                            CommandParameter="#9C27B0"
+                                            ToolTip.Tip="#9C27B0" />
+                                    <Button Width="30" Height="30" Margin="2"
+                                            Background="#FF673AB7"
+                                            Command="{Binding SetBackgroundColorCommand}"
+                                            CommandParameter="#673AB7"
+                                            ToolTip.Tip="#673AB7" />
+                                    <Button Width="30" Height="30" Margin="2"
+                                            Background="#FF1E88E5"
+                                            Command="{Binding SetBackgroundColorCommand}"
+                                            CommandParameter="#1E88E5"
+                                            ToolTip.Tip="#1E88E5" />
+                                    <Button Width="30" Height="30" Margin="2"
+                                            Background="#FF00ACC1"
+                                            Command="{Binding SetBackgroundColorCommand}"
+                                            CommandParameter="#00ACC1"
+                                            ToolTip.Tip="#00ACC1" />
+                                    <Button Width="30" Height="30" Margin="2"
+                                            Background="#FF43A047"
+                                            Command="{Binding SetBackgroundColorCommand}"
+                                            CommandParameter="#43A047"
+                                            ToolTip.Tip="#43A047" />
+                                    <Button Width="30" Height="30" Margin="2"
+                                            Background="#FF7CB342"
+                                            Command="{Binding SetBackgroundColorCommand}"
+                                            CommandParameter="#7CB342"
+                                            ToolTip.Tip="#7CB342" />
+                                    <Button Width="30" Height="30" Margin="2"
+                                            Background="#FFFB8C00"
+                                            Command="{Binding SetBackgroundColorCommand}"
+                                            CommandParameter="#FB8C00"
+                                            ToolTip.Tip="#FB8C00" />
+                                    <Button Width="30" Height="30" Margin="2"
+                                            Background="#FF795548"
+                                            Command="{Binding SetBackgroundColorCommand}"
+                                            CommandParameter="#795548"
+                                            ToolTip.Tip="#795548" />
+                                </UniformGrid>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!--  Size Card  -->
+                    <Border Margin="0,0,0,8" Padding="16" CornerRadius="8"
+                            Background="{DynamicResource CardBackgroundFillColorDefaultBrush}">
+                        <StackPanel>
+                            <TextBlock Margin="0,0,0,8"
+                                       FontWeight="SemiBold"
+                                       Text="Size" />
+                            <DockPanel Margin="0,0,0,8">
+                                <TextBlock Width="70"
+                                           VerticalAlignment="Center"
+                                           DockPanel.Dock="Left"
+                                           Text="Cell Size" />
+                                <TextBlock Width="30"
+                                           VerticalAlignment="Center"
+                                           DockPanel.Dock="Right"
+                                           Text="{Binding CellSize}"
+                                           TextAlignment="Right" />
+                                <Slider IsSnapToTickEnabled="True"
+                                        Maximum="60"
+                                        Minimum="20"
+                                        TickFrequency="1"
+                                        Value="{Binding CellSize}" />
+                            </DockPanel>
+                            <DockPanel>
+                                <TextBlock Width="70"
+                                           VerticalAlignment="Center"
+                                           DockPanel.Dock="Left"
+                                           Text="Cell Gap" />
+                                <TextBlock Width="30"
+                                           VerticalAlignment="Center"
+                                           DockPanel.Dock="Right"
+                                           Text="{Binding CellGap}"
+                                           TextAlignment="Right" />
+                                <Slider IsSnapToTickEnabled="True"
+                                        Maximum="5"
+                                        Minimum="0"
+                                        TickFrequency="1"
+                                        Value="{Binding CellGap}" />
+                            </DockPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!--  Logo Card  -->
+                    <Border Margin="0,0,0,8" Padding="16" CornerRadius="8"
+                            Background="{DynamicResource CardBackgroundFillColorDefaultBrush}">
+                        <StackPanel>
+                            <TextBlock Margin="0,0,0,8"
+                                       FontWeight="SemiBold"
+                                       Text="Logo" />
+                            <DockPanel>
+                                <Button Margin="0,0,8,0"
+                                        Command="{Binding SelectLogoCommand}"
+                                        Content="Select..."
+                                        DockPanel.Dock="Left" />
+                                <Button Width="32"
+                                        Margin="8,0,0,0"
+                                        Command="{Binding RemoveLogoCommand}"
+                                        Content="X"
+                                        DockPanel.Dock="Right"
+                                        IsVisible="{Binding LogoPath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                                <TextBlock VerticalAlignment="Center"
+                                           Opacity="0.7"
+                                           Text="{Binding LogoPath, FallbackValue='No logo selected', TargetNullValue='No logo selected'}"
+                                           TextTrimming="CharacterEllipsis" />
+                            </DockPanel>
+                            <DockPanel Margin="0,8,0,0"
+                                       IsVisible="{Binding LogoPath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                                <TextBlock Width="70"
+                                           VerticalAlignment="Center"
+                                           DockPanel.Dock="Left"
+                                           Text="Logo Size" />
+                                <TextBlock Width="40"
+                                           VerticalAlignment="Center"
+                                           DockPanel.Dock="Right"
+                                           Text="{Binding LogoSizeRatio, StringFormat={}{0:P0}}"
+                                           TextAlignment="Right" />
+                                <Slider IsSnapToTickEnabled="True"
+                                        Maximum="0.3"
+                                        Minimum="0.05"
+                                        TickFrequency="0.05"
+                                        Value="{Binding LogoSizeRatio}" />
+                            </DockPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!--  Export Card  -->
+                    <Border Margin="0,0,0,8" Padding="16" CornerRadius="8"
+                            Background="{DynamicResource CardBackgroundFillColorDefaultBrush}">
+                        <StackPanel>
+                            <TextBlock Margin="0,0,0,8"
+                                       FontWeight="SemiBold"
+                                       Text="Export" />
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="0,0,8,0"
+                                           VerticalAlignment="Center"
+                                           Text="Scale:" />
+                                <ToggleButton MinWidth="48"
+                                              Margin="0,0,4,0"
+                                              Content="1x"
+                                              IsChecked="{Binding ExportScale, Converter={StaticResource IntToBool}, ConverterParameter=1}" />
+                                <ToggleButton MinWidth="48"
+                                              Margin="0,0,4,0"
+                                              Content="2x"
+                                              IsChecked="{Binding ExportScale, Converter={StaticResource IntToBool}, ConverterParameter=2}" />
+                                <ToggleButton MinWidth="48"
+                                              Content="4x"
+                                              IsChecked="{Binding ExportScale, Converter={StaticResource IntToBool}, ConverterParameter=4}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </ScrollViewer>
+
+            <!--  RIGHT: Preview Panel  -->
+            <Grid Grid.Column="1" Margin="8,8,16,16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!--  Error bar  -->
+                <Border Grid.Row="0"
+                        Margin="0,0,0,8"
+                        Padding="12"
+                        Background="#FFFDE7"
+                        CornerRadius="4"
+                        IsVisible="{Binding HasError}">
+                    <TextBlock Foreground="#F57F17"
+                               Text="{Binding ErrorMessage}"
+                               TextWrapping="Wrap" />
+                </Border>
+
+                <!--  QR Preview  -->
+                <Border Grid.Row="1"
+                        Padding="16"
+                        Background="{DynamicResource ControlFillColorDefaultBrush}"
+                        CornerRadius="8">
+                    <Image HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           RenderOptions.BitmapInterpolationMode="None"
+                           Source="{Binding PreviewBitmap}"
+                           Stretch="Uniform" />
+                </Border>
+
+                <!--  Action Buttons  -->
+                <StackPanel Grid.Row="2"
+                            Margin="0,12,0,0"
+                            HorizontalAlignment="Right"
+                            Orientation="Horizontal">
+                    <Button Margin="0,0,8,0"
+                            Command="{Binding SavePngCommand}"
+                            Content="Save PNG" />
+                    <Button Command="{Binding CopyToClipboardCommand}"
+                            Content="Copy" />
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

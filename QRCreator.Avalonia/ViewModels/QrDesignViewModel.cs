@@ -1,15 +1,19 @@
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Input.Platform;
+using Avalonia.Media;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform.Storage;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Win32;
 using QRCoder;
-using QRCreator.Models;
-using QRCreator.Rendering;
+using QRCreator.Avalonia.Models;
+using QRCreator.Avalonia.Rendering;
 using SkiaSharp;
 
-namespace QRCreator.ViewModels;
+namespace QRCreator.Avalonia.ViewModels;
 
 public partial class QrDesignViewModel : ObservableObject
 {
@@ -20,11 +24,11 @@ public partial class QrDesignViewModel : ObservableObject
         _debounceTimer = new System.Timers.Timer(300) { AutoReset = false };
         _debounceTimer.Elapsed += (_, _) =>
         {
-            Application.Current.Dispatcher.Invoke(RegenerateQr);
+            Dispatcher.UIThread.Invoke(RegenerateQr);
         };
 
         // Generate initial preview
-        Application.Current.Dispatcher.InvokeAsync(RegenerateQr, System.Windows.Threading.DispatcherPriority.Loaded);
+        Dispatcher.UIThread.InvokeAsync(RegenerateQr, DispatcherPriority.Loaded);
     }
 
     // --- Properties ---
@@ -45,7 +49,7 @@ public partial class QrDesignViewModel : ObservableObject
     private Color _backgroundColor = Colors.White;
 
     [ObservableProperty]
-    private int _cellSize = 10;
+    private int _cellSize = 30;
 
     [ObservableProperty]
     private int _cellGap = 0;
@@ -60,7 +64,7 @@ public partial class QrDesignViewModel : ObservableObject
     private int _exportScale = 1;
 
     [ObservableProperty]
-    private BitmapSource? _previewBitmap;
+    private Bitmap? _previewBitmap;
 
     [ObservableProperty]
     private string? _errorMessage;
@@ -90,19 +94,24 @@ public partial class QrDesignViewModel : ObservableObject
     // --- Commands ---
 
     [RelayCommand]
-    private void SelectLogo()
+    private async Task SelectLogoAsync()
     {
-        var dialog = new OpenFileDialog
-        {
-            Filter = "Image files (*.png;*.jpg;*.jpeg;*.bmp)|*.png;*.jpg;*.jpeg;*.bmp",
-            Title = "Select Logo Image",
-        };
+        var topLevel = TopLevel.GetTopLevel(App.MainWindow);
+        if (topLevel is null) return;
 
-        if (dialog.ShowDialog() == true)
+        var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            LogoPath = dialog.FileName;
+            Title = "Select Logo Image",
+            AllowMultiple = false,
+            FileTypeFilter = [new FilePickerFileType("Images") { Patterns = ["*.png", "*.jpg", "*.jpeg", "*.bmp"] }]
+        });
+
+        if (files.Count > 0)
+        {
+            var path = files[0].Path.LocalPath;
+            LogoPath = path;
             _logoSkBitmap?.Dispose();
-            _logoSkBitmap = SKBitmap.Decode(dialog.FileName);
+            _logoSkBitmap = SKBitmap.Decode(path);
             RegenerateQr();
         }
     }
@@ -117,19 +126,22 @@ public partial class QrDesignViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void SavePng()
+    private async Task SavePngAsync()
     {
         if (string.IsNullOrWhiteSpace(TargetUrl))
             return;
 
-        var dialog = new SaveFileDialog
-        {
-            Filter = "PNG Image (*.png)|*.png",
-            FileName = "qrcode.png",
-            Title = "Save QR Code",
-        };
+        var topLevel = TopLevel.GetTopLevel(App.MainWindow);
+        if (topLevel is null) return;
 
-        if (dialog.ShowDialog() == true)
+        var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            Title = "Save QR Code",
+            SuggestedFileName = "qrcode.png",
+            FileTypeChoices = [new FilePickerFileType("PNG Image") { Patterns = ["*.png"] }]
+        });
+
+        if (file is not null)
         {
             try
             {
@@ -138,7 +150,7 @@ public partial class QrDesignViewModel : ObservableObject
                 if (matrix is null) return;
 
                 using var bitmap = QrRenderer.Render(matrix, options);
-                SkiaInterop.SavePng(bitmap, dialog.FileName);
+                SkiaInterop.SavePng(bitmap, file.Path.LocalPath);
             }
             catch (Exception ex)
             {
@@ -148,12 +160,40 @@ public partial class QrDesignViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void CopyToClipboard()
+    private async Task CopyToClipboardAsync()
     {
-        if (PreviewBitmap is not null)
+        if (PreviewBitmap is null) return;
+
+        // Avalonia clipboard doesn't directly support images like WPF
+        // Save to temp file and copy file reference
+        var tempPath = Path.Combine(Path.GetTempPath(), "qrcode_clipboard.png");
+        var matrix = GenerateMatrix();
+        if (matrix is null) return;
+        var options = BuildOptions(CellSize);
+        using var bitmap = QrRenderer.Render(matrix, options);
+        SkiaInterop.SavePng(bitmap, tempPath);
+
+        var topLevel = TopLevel.GetTopLevel(App.MainWindow);
+        if (topLevel?.Clipboard is not null)
         {
-            Clipboard.SetImage((BitmapSource)PreviewBitmap);
+            // TODO: Avalonia 12 clipboard doesn't easily support image/file data.
+            // For now, copy the temp file path as text so user knows where the file is.
+            await topLevel.Clipboard.SetValueAsync(DataFormat.Text, tempPath);
         }
+    }
+
+    [RelayCommand]
+    private void SetForegroundColor(string hex)
+    {
+        if (Color.TryParse(hex, out var color))
+            ForegroundColor = color;
+    }
+
+    [RelayCommand]
+    private void SetBackgroundColor(string hex)
+    {
+        if (Color.TryParse(hex, out var color))
+            BackgroundColor = color;
     }
 
     // --- Core Logic ---
@@ -173,8 +213,8 @@ public partial class QrDesignViewModel : ObservableObject
             if (matrix is null) return;
 
             var options = BuildOptions(CellSize);
-            using var bitmap = QrRenderer.Render(matrix, options);
-            PreviewBitmap = SkiaInterop.ToBitmapSource(bitmap);
+            using var skBitmap = QrRenderer.Render(matrix, options);
+            PreviewBitmap = SkiaInterop.ToBitmap(skBitmap);
             ClearError();
         }
         catch (Exception ex)

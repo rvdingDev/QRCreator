@@ -1,7 +1,7 @@
-using QRCreator.Models;
+using QRCreator.Avalonia.Models;
 using SkiaSharp;
 
-namespace QRCreator.Rendering;
+namespace QRCreator.Avalonia.Rendering;
 
 public static class QrRenderer
 {
@@ -11,7 +11,7 @@ public static class QrRenderer
     {
         int moduleCount = matrix.GetLength(0);
         int step = options.CellSize + options.CellGap;
-        int margin = options.CellSize * 2;
+        int margin = options.CellSize;
         int totalSize = moduleCount * step - options.CellGap + margin * 2;
 
         var bitmap = new SKBitmap(totalSize, totalSize);
@@ -33,7 +33,7 @@ public static class QrRenderer
                 center + logoAreaSize / 2f);
         }
 
-        var finderRegions = GetFinderRegions(moduleCount);
+        var finderRegions = GetFinderRegions(matrix);
 
         using var fgPaint = new SKPaint { Color = options.ForegroundColor, IsAntialias = true, Style = SKPaintStyle.Fill };
 
@@ -74,15 +74,30 @@ public static class QrRenderer
         return bitmap;
     }
 
-    private static (int Row, int Col, int Size)[] GetFinderRegions(int moduleCount)
+    private static (int Row, int Col, int Size)[] GetFinderRegions(bool[,] matrix)
     {
+        int moduleCount = matrix.GetLength(0);
+        int offset = DetectQuietZone(matrix);
         const int finderSize = 7;
         return
         [
-            (0, 0, finderSize),                                    // Top-left
-            (0, moduleCount - finderSize, finderSize),             // Top-right
-            (moduleCount - finderSize, 0, finderSize),             // Bottom-left
+            (offset, offset, finderSize),                                              // Top-left
+            (offset, moduleCount - offset - finderSize, finderSize),                   // Top-right
+            (moduleCount - offset - finderSize, offset, finderSize),                   // Bottom-left
         ];
+    }
+
+    private static int DetectQuietZone(bool[,] matrix)
+    {
+        int size = matrix.GetLength(0);
+        for (int i = 0; i < size; i++)
+        {
+            for (int j = 0; j < size; j++)
+            {
+                if (matrix[i, j]) return i;
+            }
+        }
+        return 0;
     }
 
     private static bool IsInFinderRegion(int row, int col, (int Row, int Col, int Size)[] regions)
