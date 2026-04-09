@@ -34,7 +34,18 @@ dotnet run --project QRCreator.Avalonia/QRCreator.Avalonia.csproj
 
 <br>
 
-## 릴리스 빌드
+## 다운로드
+
+[GitHub Releases](../../releases/latest)에서 플랫폼별 설치 파일을 받을 수 있습니다.
+
+| 플랫폼 | 아키텍처 |
+|:---|:---|
+| Windows | x64 |
+| macOS | x64 (Intel) / ARM64 (Apple Silicon) |
+
+설치 후 Velopack 자동 업데이트가 적용됩니다.
+
+## 로컬 빌드
 
 ```powershell
 # Windows

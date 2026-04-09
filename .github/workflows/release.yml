@@ -1,0 +1,131 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+env:
+  DOTNET_VERSION: "10.0.x"
+  PROJECT: QRCreator.Avalonia/QRCreator.Avalonia.csproj
+  PACK_ID: QRCreator
+  PACK_TITLE: "QR Creator"
+  PACK_AUTHORS: "rv.ding"
+  ICON_PATH: QRCreator.Avalonia/Assets/qrcreator_icon.ico
+  MAIN_EXE: QRCreator.Avalonia
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install vpk
+        run: dotnet tool install -g vpk
+
+      - name: Extract version from tag
+        id: version
+        shell: bash
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
+
+      - name: Publish win-x64
+        run: >
+          dotnet publish ${{ env.PROJECT }}
+          -c Release
+          -r win-x64
+          --self-contained
+          -o ./publish/win-x64
+          -p:PublishSingleFile=false
+
+      - name: Pack with Velopack
+        run: >
+          vpk pack
+          -u ${{ env.PACK_ID }}
+          -v ${{ steps.version.outputs.VERSION }}
+          -p ./publish/win-x64
+          -o ./releases/win
+          -r win-x64
+          -e "${{ env.MAIN_EXE }}.exe"
+          -i ${{ env.ICON_PATH }}
+          --packTitle "${{ env.PACK_TITLE }}"
+          --packAuthors "${{ env.PACK_AUTHORS }}"
+
+      - name: Upload Windows artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-release
+          path: ./releases/win/*
+
+  build-macos:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        rid: [osx-x64, osx-arm64]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install vpk
+        run: dotnet tool install -g vpk
+
+      - name: Extract version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
+
+      - name: Publish ${{ matrix.rid }}
+        run: >
+          dotnet publish ${{ env.PROJECT }}
+          -c Release
+          -r ${{ matrix.rid }}
+          --self-contained
+          -o ./publish/${{ matrix.rid }}
+          -p:PublishSingleFile=false
+
+      - name: Pack with Velopack
+        run: >
+          vpk pack
+          -u ${{ env.PACK_ID }}
+          -v ${{ steps.version.outputs.VERSION }}
+          -p ./publish/${{ matrix.rid }}
+          -o ./releases/mac
+          -r ${{ matrix.rid }}
+          -e "${{ env.MAIN_EXE }}"
+          -i ${{ env.ICON_PATH }}
+          --packTitle "${{ env.PACK_TITLE }}"
+          --packAuthors "${{ env.PACK_AUTHORS }}"
+
+      - name: Upload macOS artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-${{ matrix.rid }}
+          path: ./releases/mac/*
+
+  release:
+    needs: [build-windows, build-macos]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            ./artifacts/windows-release/*
+            ./artifacts/macos-osx-x64/*
+            ./artifacts/macos-osx-arm64/*
