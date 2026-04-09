@@ -5,7 +5,7 @@
 
 set -e
 
-VERSION="${1:-1.0.0}"
+VERSION="${1:-1.0.1}"
 PROJECT_DIR="QRCreator.Avalonia"
 PROJECT_FILE="$PROJECT_DIR/QRCreator.Avalonia.csproj"
 PACK_ID="QRCreator"

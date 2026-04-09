@@ -1,8 +1,8 @@
 # QRCreator Build Script (Windows)
-# Usage: .\build.ps1 [-Version "1.0.0"]
+# Usage: .\build.ps1 [-Version "1.0.1"]
 
 param(
-    [string]$Version = "1.0.0"
+    [string]$Version = "1.0.1"
 )
 
 $ErrorActionPreference = "Stop"

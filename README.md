@@ -49,10 +49,10 @@ dotnet run --project QRCreator.Avalonia/QRCreator.Avalonia.csproj
 
 ```powershell
 # Windows
-.\build.ps1 -Version "1.0.0"      # → releases/win/
+.\build.ps1 -Version "1.0.1"      # → releases/win/
 
 # macOS (Intel + Apple Silicon)
-./build.sh 1.0.0                   # → releases/mac/
+./build.sh 1.0.1                   # → releases/mac/
 ```
 
 > 필요: [Velopack CLI](https://velopack.io) (`dotnet tool install -g vpk`)
