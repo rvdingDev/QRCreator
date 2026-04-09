@@ -8,7 +8,7 @@
   <img src="https://img.shields.io/badge/.NET-10.0-512BD4?style=flat-square&logo=dotnet&logoColor=white" alt=".NET 10" />
   <img src="https://img.shields.io/badge/Avalonia-12-8B44AC?style=flat-square" alt="Avalonia 12" />
   <img src="https://img.shields.io/badge/SkiaSharp-3.x-0B6623?style=flat-square" alt="SkiaSharp" />
-  <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="MIT" />
+  <img src="https://img.shields.io/badge/license-All%20rights%20reserved-red?style=flat-square" alt="License" />
 </div>
 
 <br>
