@@ -62,10 +62,15 @@ nunit-*.xml
 *.futdcache.v2
 *FileContentIndex*
 
+# Build output
+publish/
+releases/
+
 # Project-specific
 .serena/
 docs/superpowers/
 SPEC.md
+*.Backup.tmp
 
 # Claude
 .claude/
