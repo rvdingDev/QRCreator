@@ -102,7 +102,7 @@ jobs:
           -o ./releases/mac
           -r ${{ matrix.rid }}
           -e "${{ env.MAIN_EXE }}"
-          -i ${{ env.ICON_PATH }}
+          -i QRCreator.Avalonia/Assets/qrcreator_icon.icns
           --packTitle "${{ env.PACK_TITLE }}"
           --packAuthors "${{ env.PACK_AUTHORS }}"
 
