@@ -87,6 +87,6 @@ QRCreator.Avalonia/
 
 <br>
 
-## 라이선스
+## Built with
 
-MIT
+이 프로젝트는 [Claude Code](https://claude.ai/code) 바이브코딩으로 제작되었습니다.
