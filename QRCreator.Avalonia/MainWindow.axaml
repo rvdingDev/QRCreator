@@ -8,7 +8,8 @@
         Width="1100"
         Height="750"
         MinWidth="800"
-        MinHeight="600">
+        MinHeight="600"
+        Icon="avares://QRCreator.Avalonia/Assets/qrcreator_icon.ico">
 
     <Window.Resources>
         <converters:EnumToBooleanConverter x:Key="EnumToBool" />
@@ -41,10 +42,16 @@
                            FontSize="16"
                            FontWeight="SemiBold"
                            Text="QR Creator" />
-                <Button DockPanel.Dock="Right"
-                        HorizontalAlignment="Right"
-                        Click="ThemeToggle_Click"
-                        Content="Toggle Theme" />
+                <StackPanel DockPanel.Dock="Right"
+                            HorizontalAlignment="Right"
+                            Orientation="Horizontal"
+                            Spacing="4">
+                    <Button Click="About_Click"
+                            Content="About"
+                            ToolTip.Tip="정보" />
+                    <Button Click="ThemeToggle_Click"
+                            Content="Toggle Theme" />
+                </StackPanel>
             </DockPanel>
         </Border>
 

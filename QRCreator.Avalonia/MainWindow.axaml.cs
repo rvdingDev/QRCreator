@@ -14,6 +14,12 @@ public partial class MainWindow : Window
         DataContext = new QrDesignViewModel();
     }
 
+    private void About_Click(object? sender, global::Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        var about = new AboutWindow();
+        about.ShowDialog(this);
+    }
+
     private void ThemeToggle_Click(object? sender, global::Avalonia.Interactivity.RoutedEventArgs e)
     {
         var app = Application.Current;

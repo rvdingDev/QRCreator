@@ -1,0 +1,72 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="QRCreator.Avalonia.AboutWindow"
+        Title="QR Creator 정보"
+        Width="500"
+        Height="520"
+        CanResize="False"
+        WindowStartupLocation="CenterOwner">
+
+    <ScrollViewer Padding="24">
+        <StackPanel Spacing="16">
+
+            <!-- Header -->
+            <StackPanel HorizontalAlignment="Center" Spacing="8">
+                <Image Source="avares://QRCreator.Avalonia/Assets/qrcreator_icon.ico"
+                       Width="64" Height="64"
+                       HorizontalAlignment="Center" />
+                <TextBlock Text="QR Creator"
+                           FontSize="22" FontWeight="Bold"
+                           HorizontalAlignment="Center" />
+                <TextBlock x:Name="VersionText"
+                           FontSize="13" Opacity="0.6"
+                           HorizontalAlignment="Center" />
+            </StackPanel>
+
+            <Separator />
+
+            <!-- Description -->
+            <TextBlock Text="셀 모양, 색상, 로고를 커스터마이징할 수 있는 크로스플랫폼 QR 코드 디자이너."
+                       TextWrapping="Wrap" FontSize="13" Opacity="0.8" />
+
+            <Separator />
+
+            <!-- Open Source Libraries -->
+            <TextBlock Text="오픈소스 라이브러리" FontSize="15" FontWeight="SemiBold" />
+
+            <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                    CornerRadius="8" Padding="12">
+                <StackPanel Spacing="10">
+                    <StackPanel Spacing="2">
+                        <TextBlock Text="Avalonia 12.0" FontWeight="SemiBold" FontSize="13" />
+                        <TextBlock Text="MIT License  |  Cross-platform UI framework" FontSize="12" Opacity="0.6" />
+                    </StackPanel>
+                    <StackPanel Spacing="2">
+                        <TextBlock Text="CommunityToolkit.Mvvm 8.4" FontWeight="SemiBold" FontSize="13" />
+                        <TextBlock Text="MIT License  |  MVVM source generators" FontSize="12" Opacity="0.6" />
+                    </StackPanel>
+                    <StackPanel Spacing="2">
+                        <TextBlock Text="QRCoder 1.8" FontWeight="SemiBold" FontSize="13" />
+                        <TextBlock Text="MIT License  |  QR code matrix generation" FontSize="12" Opacity="0.6" />
+                    </StackPanel>
+                    <StackPanel Spacing="2">
+                        <TextBlock Text="SkiaSharp 3.x" FontWeight="SemiBold" FontSize="13" />
+                        <TextBlock Text="MIT License  |  2D graphics rendering" FontSize="12" Opacity="0.6" />
+                    </StackPanel>
+                    <StackPanel Spacing="2">
+                        <TextBlock Text="Velopack" FontWeight="SemiBold" FontSize="13" />
+                        <TextBlock Text="MIT License  |  App deployment and auto-update" FontSize="12" Opacity="0.6" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Separator />
+
+            <!-- Footer -->
+            <TextBlock Text="Copyright (c) 2026 rv.ding. MIT License."
+                       FontSize="12" Opacity="0.5"
+                       HorizontalAlignment="Center" />
+
+        </StackPanel>
+    </ScrollViewer>
+</Window>
