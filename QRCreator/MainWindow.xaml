@@ -603,7 +603,7 @@
                     <Image
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        RenderOptions.BitmapScalingMode="NearestNeighbor"
+                        RenderOptions.BitmapScalingMode="HighQuality"
                         Source="{Binding PreviewBitmap}"
                         Stretch="Uniform" />
                 </Border>
