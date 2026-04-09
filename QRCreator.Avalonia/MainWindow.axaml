@@ -16,6 +16,14 @@
         <converters:ColorToHexConverter x:Key="ColorToHex" />
         <converters:IntToBooleanConverter x:Key="IntToBool" />
 
+        <!--  Palette button style: adds border to all color swatch buttons  -->
+        <ControlTheme x:Key="PaletteButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="BorderBrush" Value="{DynamicResource AppPaletteBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="0" />
+        </ControlTheme>
+
         <!--  Shape icon geometries (matching FluentIconPaths SVG data, viewBox 24x24)  -->
         <StreamGeometry x:Key="SquareGeom">M0 0H24V24H0Z</StreamGeometry>
         <StreamGeometry x:Key="CircleGeom">M12 2A10 10 0 1 0 12 22A10 10 0 1 0 12 2Z</StreamGeometry>
@@ -36,7 +44,7 @@
         </Grid.RowDefinitions>
 
         <!--  Title Bar area  -->
-        <Border Grid.Row="0" Padding="16,8" Background="{DynamicResource CardBackgroundFillColorDefaultBrush}">
+        <Border Grid.Row="0" Padding="16,8" Background="{DynamicResource AppTitleBarBrush}">
             <DockPanel>
                 <TextBlock VerticalAlignment="Center"
                            FontSize="16"
@@ -70,7 +78,7 @@
 
                     <!--  URL Card  -->
                     <Border Margin="0,0,0,8" Padding="16" CornerRadius="8"
-                            Background="{DynamicResource CardBackgroundFillColorDefaultBrush}">
+                            Background="{DynamicResource AppCardBrush}">
                         <StackPanel>
                             <TextBlock Margin="0,0,0,8"
                                        FontWeight="SemiBold"
@@ -82,7 +90,7 @@
 
                     <!--  Cell Shape Card  -->
                     <Border Margin="0,0,0,8" Padding="16" CornerRadius="8"
-                            Background="{DynamicResource CardBackgroundFillColorDefaultBrush}">
+                            Background="{DynamicResource AppCardBrush}">
                         <StackPanel>
                             <TextBlock Margin="0,0,0,8"
                                        FontWeight="SemiBold"
@@ -92,61 +100,61 @@
                                               IsChecked="{Binding CellShape, Converter={StaticResource EnumToBool}, ConverterParameter=Square}"
                                               ToolTip.Tip="Square">
                                     <PathIcon Width="16" Height="16" Data="{StaticResource SquareGeom}"
-                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                              Foreground="{DynamicResource AppIconFillBrush}" />
                                 </ToggleButton>
                                 <ToggleButton Margin="2"
                                               IsChecked="{Binding CellShape, Converter={StaticResource EnumToBool}, ConverterParameter=Circle}"
                                               ToolTip.Tip="Circle">
                                     <PathIcon Width="16" Height="16" Data="{StaticResource CircleGeom}"
-                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                              Foreground="{DynamicResource AppIconFillBrush}" />
                                 </ToggleButton>
                                 <ToggleButton Margin="2"
                                               IsChecked="{Binding CellShape, Converter={StaticResource EnumToBool}, ConverterParameter=RoundedSquare}"
                                               ToolTip.Tip="Rounded">
                                     <PathIcon Width="16" Height="16" Data="{StaticResource RoundedSquareGeom}"
-                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                              Foreground="{DynamicResource AppIconFillBrush}" />
                                 </ToggleButton>
                                 <ToggleButton Margin="2"
                                               IsChecked="{Binding CellShape, Converter={StaticResource EnumToBool}, ConverterParameter=Diamond}"
                                               ToolTip.Tip="Diamond">
                                     <PathIcon Width="16" Height="16" Data="{StaticResource DiamondGeom}"
-                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                              Foreground="{DynamicResource AppIconFillBrush}" />
                                 </ToggleButton>
                                 <ToggleButton Margin="2"
                                               IsChecked="{Binding CellShape, Converter={StaticResource EnumToBool}, ConverterParameter=Heart}"
                                               ToolTip.Tip="Heart">
                                     <PathIcon Width="16" Height="16" Data="{StaticResource HeartGeom}"
-                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                              Foreground="{DynamicResource AppIconFillBrush}" />
                                 </ToggleButton>
                                 <ToggleButton Margin="2"
                                               IsChecked="{Binding CellShape, Converter={StaticResource EnumToBool}, ConverterParameter=Star}"
                                               ToolTip.Tip="Star">
                                     <PathIcon Width="16" Height="16" Data="{StaticResource StarGeom}"
-                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                              Foreground="{DynamicResource AppIconFillBrush}" />
                                 </ToggleButton>
                                 <ToggleButton Margin="2"
                                               IsChecked="{Binding CellShape, Converter={StaticResource EnumToBool}, ConverterParameter=Hexagon}"
                                               ToolTip.Tip="Hexagon">
                                     <PathIcon Width="16" Height="16" Data="{StaticResource HexagonGeom}"
-                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                              Foreground="{DynamicResource AppIconFillBrush}" />
                                 </ToggleButton>
                                 <ToggleButton Margin="2"
                                               IsChecked="{Binding CellShape, Converter={StaticResource EnumToBool}, ConverterParameter=Raindrop}"
                                               ToolTip.Tip="Raindrop">
                                     <PathIcon Width="16" Height="16" Data="{StaticResource RaindropGeom}"
-                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                              Foreground="{DynamicResource AppIconFillBrush}" />
                                 </ToggleButton>
                                 <ToggleButton Margin="2"
                                               IsChecked="{Binding CellShape, Converter={StaticResource EnumToBool}, ConverterParameter=Clover}"
                                               ToolTip.Tip="Clover">
                                     <PathIcon Width="16" Height="16" Data="{StaticResource CloverGeom}"
-                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                              Foreground="{DynamicResource AppIconFillBrush}" />
                                 </ToggleButton>
                                 <ToggleButton Margin="2"
                                               IsChecked="{Binding CellShape, Converter={StaticResource EnumToBool}, ConverterParameter=Octagon}"
                                               ToolTip.Tip="Octagon">
                                     <PathIcon Width="16" Height="16" Data="{StaticResource OctagonGeom}"
-                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                              Foreground="{DynamicResource AppIconFillBrush}" />
                                 </ToggleButton>
                             </UniformGrid>
                         </StackPanel>
@@ -154,7 +162,7 @@
 
                     <!--  Finder Shape Card  -->
                     <Border Margin="0,0,0,8" Padding="16" CornerRadius="8"
-                            Background="{DynamicResource CardBackgroundFillColorDefaultBrush}">
+                            Background="{DynamicResource AppCardBrush}">
                         <StackPanel>
                             <TextBlock Margin="0,0,0,8"
                                        FontWeight="SemiBold"
@@ -164,61 +172,61 @@
                                               IsChecked="{Binding FinderShape, Converter={StaticResource EnumToBool}, ConverterParameter=Square}"
                                               ToolTip.Tip="Square">
                                     <PathIcon Width="16" Height="16" Data="{StaticResource SquareGeom}"
-                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                              Foreground="{DynamicResource AppIconFillBrush}" />
                                 </ToggleButton>
                                 <ToggleButton Margin="2"
                                               IsChecked="{Binding FinderShape, Converter={StaticResource EnumToBool}, ConverterParameter=Circle}"
                                               ToolTip.Tip="Circle">
                                     <PathIcon Width="16" Height="16" Data="{StaticResource CircleGeom}"
-                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                              Foreground="{DynamicResource AppIconFillBrush}" />
                                 </ToggleButton>
                                 <ToggleButton Margin="2"
                                               IsChecked="{Binding FinderShape, Converter={StaticResource EnumToBool}, ConverterParameter=RoundedSquare}"
                                               ToolTip.Tip="Rounded">
                                     <PathIcon Width="16" Height="16" Data="{StaticResource RoundedSquareGeom}"
-                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                              Foreground="{DynamicResource AppIconFillBrush}" />
                                 </ToggleButton>
                                 <ToggleButton Margin="2"
                                               IsChecked="{Binding FinderShape, Converter={StaticResource EnumToBool}, ConverterParameter=Diamond}"
                                               ToolTip.Tip="Diamond">
                                     <PathIcon Width="16" Height="16" Data="{StaticResource DiamondGeom}"
-                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                              Foreground="{DynamicResource AppIconFillBrush}" />
                                 </ToggleButton>
                                 <ToggleButton Margin="2"
                                               IsChecked="{Binding FinderShape, Converter={StaticResource EnumToBool}, ConverterParameter=Heart}"
                                               ToolTip.Tip="Heart">
                                     <PathIcon Width="16" Height="16" Data="{StaticResource HeartGeom}"
-                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                              Foreground="{DynamicResource AppIconFillBrush}" />
                                 </ToggleButton>
                                 <ToggleButton Margin="2"
                                               IsChecked="{Binding FinderShape, Converter={StaticResource EnumToBool}, ConverterParameter=Star}"
                                               ToolTip.Tip="Star">
                                     <PathIcon Width="16" Height="16" Data="{StaticResource StarGeom}"
-                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                              Foreground="{DynamicResource AppIconFillBrush}" />
                                 </ToggleButton>
                                 <ToggleButton Margin="2"
                                               IsChecked="{Binding FinderShape, Converter={StaticResource EnumToBool}, ConverterParameter=Hexagon}"
                                               ToolTip.Tip="Hexagon">
                                     <PathIcon Width="16" Height="16" Data="{StaticResource HexagonGeom}"
-                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                              Foreground="{DynamicResource AppIconFillBrush}" />
                                 </ToggleButton>
                                 <ToggleButton Margin="2"
                                               IsChecked="{Binding FinderShape, Converter={StaticResource EnumToBool}, ConverterParameter=Raindrop}"
                                               ToolTip.Tip="Raindrop">
                                     <PathIcon Width="16" Height="16" Data="{StaticResource RaindropGeom}"
-                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                              Foreground="{DynamicResource AppIconFillBrush}" />
                                 </ToggleButton>
                                 <ToggleButton Margin="2"
                                               IsChecked="{Binding FinderShape, Converter={StaticResource EnumToBool}, ConverterParameter=Clover}"
                                               ToolTip.Tip="Clover">
                                     <PathIcon Width="16" Height="16" Data="{StaticResource CloverGeom}"
-                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                              Foreground="{DynamicResource AppIconFillBrush}" />
                                 </ToggleButton>
                                 <ToggleButton Margin="2"
                                               IsChecked="{Binding FinderShape, Converter={StaticResource EnumToBool}, ConverterParameter=Octagon}"
                                               ToolTip.Tip="Octagon">
                                     <PathIcon Width="16" Height="16" Data="{StaticResource OctagonGeom}"
-                                              Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                              Foreground="{DynamicResource AppIconFillBrush}" />
                                 </ToggleButton>
                             </UniformGrid>
                         </StackPanel>
@@ -226,7 +234,7 @@
 
                     <!--  Colors Card  -->
                     <Border Margin="0,0,0,8" Padding="16" CornerRadius="8"
-                            Background="{DynamicResource CardBackgroundFillColorDefaultBrush}">
+                            Background="{DynamicResource AppCardBrush}">
                         <StackPanel>
                             <TextBlock Margin="0,0,0,12"
                                        FontWeight="SemiBold"
@@ -242,7 +250,7 @@
                                     <Border Width="32" Height="32"
                                             Margin="0,0,8,0"
                                             CornerRadius="4"
-                                            BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                            BorderBrush="{DynamicResource AppStrokeBrush}"
                                             BorderThickness="1">
                                         <Border.Background>
                                             <SolidColorBrush Color="{Binding ForegroundColor}" />
@@ -256,64 +264,62 @@
                                 <UniformGrid Width="210"
                                              HorizontalAlignment="Left"
                                              Columns="6">
-                                    <Button Width="30" Height="30" Margin="2"
+                                    <Button Width="30" Height="30" Margin="2" Theme="{StaticResource PaletteButton}"
                                             Background="#FF000000"
                                             Command="{Binding SetForegroundColorCommand}"
                                             CommandParameter="#000000"
                                             ToolTip.Tip="#000000" />
-                                    <Button Width="30" Height="30" Margin="2"
+                                    <Button Width="30" Height="30" Margin="2" Theme="{StaticResource PaletteButton}"
                                             Background="#FFFFFFFF"
-                                            BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
-                                            BorderThickness="1"
                                             Command="{Binding SetForegroundColorCommand}"
                                             CommandParameter="#FFFFFF"
                                             ToolTip.Tip="#FFFFFF" />
-                                    <Button Width="30" Height="30" Margin="2"
+                                    <Button Width="30" Height="30" Margin="2" Theme="{StaticResource PaletteButton}"
                                             Background="#FFE53935"
                                             Command="{Binding SetForegroundColorCommand}"
                                             CommandParameter="#E53935"
                                             ToolTip.Tip="#E53935" />
-                                    <Button Width="30" Height="30" Margin="2"
+                                    <Button Width="30" Height="30" Margin="2" Theme="{StaticResource PaletteButton}"
                                             Background="#FFE91E63"
                                             Command="{Binding SetForegroundColorCommand}"
                                             CommandParameter="#E91E63"
                                             ToolTip.Tip="#E91E63" />
-                                    <Button Width="30" Height="30" Margin="2"
+                                    <Button Width="30" Height="30" Margin="2" Theme="{StaticResource PaletteButton}"
                                             Background="#FF9C27B0"
                                             Command="{Binding SetForegroundColorCommand}"
                                             CommandParameter="#9C27B0"
                                             ToolTip.Tip="#9C27B0" />
-                                    <Button Width="30" Height="30" Margin="2"
+                                    <Button Width="30" Height="30" Margin="2" Theme="{StaticResource PaletteButton}"
                                             Background="#FF673AB7"
                                             Command="{Binding SetForegroundColorCommand}"
                                             CommandParameter="#673AB7"
                                             ToolTip.Tip="#673AB7" />
-                                    <Button Width="30" Height="30" Margin="2"
+                                    <Button Width="30" Height="30" Margin="2" Theme="{StaticResource PaletteButton}"
                                             Background="#FF1E88E5"
                                             Command="{Binding SetForegroundColorCommand}"
                                             CommandParameter="#1E88E5"
                                             ToolTip.Tip="#1E88E5" />
-                                    <Button Width="30" Height="30" Margin="2"
+                                    <Button Width="30" Height="30" Margin="2" Theme="{StaticResource PaletteButton}"
                                             Background="#FF00ACC1"
                                             Command="{Binding SetForegroundColorCommand}"
                                             CommandParameter="#00ACC1"
                                             ToolTip.Tip="#00ACC1" />
-                                    <Button Width="30" Height="30" Margin="2"
+                                    <Button Width="30" Height="30" Margin="2" Theme="{StaticResource PaletteButton}"
                                             Background="#FF43A047"
                                             Command="{Binding SetForegroundColorCommand}"
                                             CommandParameter="#43A047"
                                             ToolTip.Tip="#43A047" />
-                                    <Button Width="30" Height="30" Margin="2"
+                                    <Button Width="30" Height="30" Margin="2" Theme="{StaticResource PaletteButton}"
                                             Background="#FF7CB342"
                                             Command="{Binding SetForegroundColorCommand}"
                                             CommandParameter="#7CB342"
                                             ToolTip.Tip="#7CB342" />
-                                    <Button Width="30" Height="30" Margin="2"
+                                    <Button Width="30" Height="30" Margin="2" Theme="{StaticResource PaletteButton}"
                                             Background="#FFFB8C00"
                                             Command="{Binding SetForegroundColorCommand}"
                                             CommandParameter="#FB8C00"
                                             ToolTip.Tip="#FB8C00" />
-                                    <Button Width="30" Height="30" Margin="2"
+                                    <Button Width="30" Height="30" Margin="2" Theme="{StaticResource PaletteButton}"
                                             Background="#FF795548"
                                             Command="{Binding SetForegroundColorCommand}"
                                             CommandParameter="#795548"
@@ -331,7 +337,7 @@
                                     <Border Width="32" Height="32"
                                             Margin="0,0,8,0"
                                             CornerRadius="4"
-                                            BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                            BorderBrush="{DynamicResource AppStrokeBrush}"
                                             BorderThickness="1">
                                         <Border.Background>
                                             <SolidColorBrush Color="{Binding BackgroundColor}" />
@@ -345,64 +351,62 @@
                                 <UniformGrid Width="210"
                                              HorizontalAlignment="Left"
                                              Columns="6">
-                                    <Button Width="30" Height="30" Margin="2"
+                                    <Button Width="30" Height="30" Margin="2" Theme="{StaticResource PaletteButton}"
                                             Background="#FF000000"
                                             Command="{Binding SetBackgroundColorCommand}"
                                             CommandParameter="#000000"
                                             ToolTip.Tip="#000000" />
-                                    <Button Width="30" Height="30" Margin="2"
+                                    <Button Width="30" Height="30" Margin="2" Theme="{StaticResource PaletteButton}"
                                             Background="#FFFFFFFF"
-                                            BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
-                                            BorderThickness="1"
                                             Command="{Binding SetBackgroundColorCommand}"
                                             CommandParameter="#FFFFFF"
                                             ToolTip.Tip="#FFFFFF" />
-                                    <Button Width="30" Height="30" Margin="2"
+                                    <Button Width="30" Height="30" Margin="2" Theme="{StaticResource PaletteButton}"
                                             Background="#FFE53935"
                                             Command="{Binding SetBackgroundColorCommand}"
                                             CommandParameter="#E53935"
                                             ToolTip.Tip="#E53935" />
-                                    <Button Width="30" Height="30" Margin="2"
+                                    <Button Width="30" Height="30" Margin="2" Theme="{StaticResource PaletteButton}"
                                             Background="#FFE91E63"
                                             Command="{Binding SetBackgroundColorCommand}"
                                             CommandParameter="#E91E63"
                                             ToolTip.Tip="#E91E63" />
-                                    <Button Width="30" Height="30" Margin="2"
+                                    <Button Width="30" Height="30" Margin="2" Theme="{StaticResource PaletteButton}"
                                             Background="#FF9C27B0"
                                             Command="{Binding SetBackgroundColorCommand}"
                                             CommandParameter="#9C27B0"
                                             ToolTip.Tip="#9C27B0" />
-                                    <Button Width="30" Height="30" Margin="2"
+                                    <Button Width="30" Height="30" Margin="2" Theme="{StaticResource PaletteButton}"
                                             Background="#FF673AB7"
                                             Command="{Binding SetBackgroundColorCommand}"
                                             CommandParameter="#673AB7"
                                             ToolTip.Tip="#673AB7" />
-                                    <Button Width="30" Height="30" Margin="2"
+                                    <Button Width="30" Height="30" Margin="2" Theme="{StaticResource PaletteButton}"
                                             Background="#FF1E88E5"
                                             Command="{Binding SetBackgroundColorCommand}"
                                             CommandParameter="#1E88E5"
                                             ToolTip.Tip="#1E88E5" />
-                                    <Button Width="30" Height="30" Margin="2"
+                                    <Button Width="30" Height="30" Margin="2" Theme="{StaticResource PaletteButton}"
                                             Background="#FF00ACC1"
                                             Command="{Binding SetBackgroundColorCommand}"
                                             CommandParameter="#00ACC1"
                                             ToolTip.Tip="#00ACC1" />
-                                    <Button Width="30" Height="30" Margin="2"
+                                    <Button Width="30" Height="30" Margin="2" Theme="{StaticResource PaletteButton}"
                                             Background="#FF43A047"
                                             Command="{Binding SetBackgroundColorCommand}"
                                             CommandParameter="#43A047"
                                             ToolTip.Tip="#43A047" />
-                                    <Button Width="30" Height="30" Margin="2"
+                                    <Button Width="30" Height="30" Margin="2" Theme="{StaticResource PaletteButton}"
                                             Background="#FF7CB342"
                                             Command="{Binding SetBackgroundColorCommand}"
                                             CommandParameter="#7CB342"
                                             ToolTip.Tip="#7CB342" />
-                                    <Button Width="30" Height="30" Margin="2"
+                                    <Button Width="30" Height="30" Margin="2" Theme="{StaticResource PaletteButton}"
                                             Background="#FFFB8C00"
                                             Command="{Binding SetBackgroundColorCommand}"
                                             CommandParameter="#FB8C00"
                                             ToolTip.Tip="#FB8C00" />
-                                    <Button Width="30" Height="30" Margin="2"
+                                    <Button Width="30" Height="30" Margin="2" Theme="{StaticResource PaletteButton}"
                                             Background="#FF795548"
                                             Command="{Binding SetBackgroundColorCommand}"
                                             CommandParameter="#795548"
@@ -414,7 +418,7 @@
 
                     <!--  Size Card  -->
                     <Border Margin="0,0,0,8" Padding="16" CornerRadius="8"
-                            Background="{DynamicResource CardBackgroundFillColorDefaultBrush}">
+                            Background="{DynamicResource AppCardBrush}">
                         <StackPanel>
                             <TextBlock Margin="0,0,0,8"
                                        FontWeight="SemiBold"
@@ -456,7 +460,7 @@
 
                     <!--  Logo Card  -->
                     <Border Margin="0,0,0,8" Padding="16" CornerRadius="8"
-                            Background="{DynamicResource CardBackgroundFillColorDefaultBrush}">
+                            Background="{DynamicResource AppCardBrush}">
                         <StackPanel>
                             <TextBlock Margin="0,0,0,8"
                                        FontWeight="SemiBold"
@@ -499,7 +503,7 @@
 
                     <!--  Export Card  -->
                     <Border Margin="0,0,0,8" Padding="16" CornerRadius="8"
-                            Background="{DynamicResource CardBackgroundFillColorDefaultBrush}">
+                            Background="{DynamicResource AppCardBrush}">
                         <StackPanel>
                             <TextBlock Margin="0,0,0,8"
                                        FontWeight="SemiBold"
@@ -538,10 +542,10 @@
                 <Border Grid.Row="0"
                         Margin="0,0,0,8"
                         Padding="12"
-                        Background="#FFFDE7"
+                        Background="{DynamicResource AppErrorBgBrush}"
                         CornerRadius="4"
                         IsVisible="{Binding HasError}">
-                    <TextBlock Foreground="#F57F17"
+                    <TextBlock Foreground="{DynamicResource AppErrorFgBrush}"
                                Text="{Binding ErrorMessage}"
                                TextWrapping="Wrap" />
                 </Border>
@@ -549,7 +553,7 @@
                 <!--  QR Preview  -->
                 <Border Grid.Row="1"
                         Padding="16"
-                        Background="{DynamicResource ControlFillColorDefaultBrush}"
+                        Background="{DynamicResource AppPreviewBgBrush}"
                         CornerRadius="8">
                     <Image HorizontalAlignment="Center"
                            VerticalAlignment="Center"
